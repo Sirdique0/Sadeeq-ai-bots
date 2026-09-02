@@ -19,6 +19,7 @@
   };
   const nav = [...document.querySelectorAll('[data-nav]')];
   let closing = false;
+  let loaded = false;
 
   function hideLoader() {
     if (!loader) return;
@@ -100,6 +101,7 @@
     if (error) throw error;
 
     fill(data);
+    loaded = true;
     hideLoader();
   }
 
@@ -172,6 +174,15 @@
     if (closing) return;
     if (event === 'SIGNED_OUT' || !session) login();
   });
+
+  // Never allow a network, CDN, or browser-cache problem to leave the page
+  // trapped behind the loader forever. Normal success hides it much earlier.
+  window.setTimeout(() => {
+    if (!loaded && loader && !loader.classList.contains('hidden')) {
+      hideLoader();
+      status('System control is taking longer than expected. Please refresh once if the controls do not appear.', 'error');
+    }
+  }, 15000);
 
   load().catch(error => {
     hideLoader();
