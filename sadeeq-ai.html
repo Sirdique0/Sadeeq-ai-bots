@@ -1,75 +1,23 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#05070d">
-<meta name="description" content="Sadeeq AI system control">
-<meta http-equiv="Cache-Control" content="no-store">
-<link rel="icon" href="./logo.svg?v=1" type="image/svg+xml">
-<title>Sadeeq AI — System</title>
-<link rel="stylesheet" href="./dashboard.css?v=3">
-<link rel="stylesheet" href="./sadeeq-ai.css?v=2">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#05070d"><meta name="description" content="Sadeeq AI system control"><meta http-equiv="Cache-Control" content="no-store"><link rel="icon" href="./logo.svg?v=1" type="image/svg+xml"><title>Sadeeq AI — System</title><link rel="stylesheet" href="./dashboard.css?v=3"><link rel="stylesheet" href="./sadeeq-ai.css?v=2">
 </head>
-<body>
-<div class="app">
-  <div id="loader" class="loader" aria-hidden="false">
-    <div class="loader-box system-loader-box">
-      <div class="system-loader-mark">
-        <span></span><img src="./logo.svg?v=1" alt="">
-      </div>
-      <strong>SADEEQ AI</strong>
-      <p>SECURING SYSTEM CONTROL</p>
-    </div>
-  </div>
-
-  <div id="scrim" class="drawer-scrim"></div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="brand">
-      <img src="./logo.svg?v=1" alt="Sadeeq AI logo">
-      <div><strong>Sadeeq AI</strong><span>OWNER CONTROL CENTER</span></div>
-    </div>
-    <nav class="nav">
-      <section class="nav-group"><div class="nav-label">OVERVIEW</div><a class="nav-item" href="./dashboard.html"><span class="nav-icon">⌂</span>Dashboard</a></section>
-      <section class="nav-group"><div class="nav-label">AI MANAGEMENT</div><a class="nav-item active" href="./sadeeq-ai.html" aria-current="page"><span class="nav-icon">✦</span>Sadeeq AI</a><button class="nav-item" data-nav="Create Bot" type="button"><span class="nav-icon">＋</span>Create Bot</button><button class="nav-item" data-nav="All Bots" type="button"><span class="nav-icon">◫</span>All Bots</button><button class="nav-item" data-nav="AI Models" type="button"><span class="nav-icon">◇</span>AI Models</button><button class="nav-item" data-nav="Knowledge Base" type="button"><span class="nav-icon">▤</span>Knowledge Base</button></section>
-      <section class="nav-group"><div class="nav-label">INTEGRATIONS</div><button class="nav-item" data-nav="Webs Joined" type="button"><span class="nav-icon">◎</span>Webs Joined</button><button class="nav-item" data-nav="API Keys" type="button"><span class="nav-icon">⌘</span>API Keys</button><button class="nav-item" data-nav="Web/API Tools" type="button"><span class="nav-icon">↗</span>Web/API Tools</button></section>
-      <section class="nav-group"><div class="nav-label">MONITORING</div><button class="nav-item" data-nav="Usage & Analytics" type="button"><span class="nav-icon">▥</span>Usage &amp; Analytics</button><button class="nav-item" data-nav="Audit Logs" type="button"><span class="nav-icon">≡</span>Audit Logs</button><button class="nav-item" data-nav="System Health" type="button"><span class="nav-icon">♥</span>System Health</button><button class="nav-item" data-nav="Alerts & Incidents" type="button"><span class="nav-icon">!</span>Alerts &amp; Incidents</button></section>
-      <section class="nav-group"><div class="nav-label">CONFIGURATION</div><button class="nav-item" data-nav="Instructions" type="button"><span class="nav-icon">≣</span>Instructions</button><button class="nav-item" data-nav="Automation" type="button"><span class="nav-icon">◌</span>Automation</button><button class="nav-item" data-nav="Security" type="button"><span class="nav-icon">◇</span>Security</button><button class="nav-item" data-nav="Account & Settings" type="button"><span class="nav-icon">⚙</span>Account &amp; Settings</button></section>
-    </nav>
-    <div class="sidebar-foot"><div class="security-pill"><span class="dot"></span><span id="sessionState">Checking secure session</span></div></div>
-  </aside>
-
-  <main class="main">
-    <header class="topbar">
-      <button id="menu" class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
-      <div class="crumb"><small>AI MANAGEMENT</small><strong>Sadeeq AI</strong></div>
-      <div class="top-actions"><div class="status-chip"><span class="dot"></span>System control</div></div>
-    </header>
-
-    <section class="content ai-content">
-      <div class="welcome">
-        <div><p class="kicker">SADEEQ AI / SYSTEM CONTROL</p><h1>Control the intelligence layer.</h1><p>Define how Sadeeq AI behaves across the platform. Model routing and provider credentials remain separated for the AI Models level.</p></div>
-        <div id="stateChip" class="status-chip"><span class="dot"></span>Loading configuration</div>
-      </div>
-      <div id="status" class="ai-status" role="status" aria-live="polite"></div>
-
-      <form id="configForm" class="ai-grid" novalidate>
-        <article class="card hero-card"><div class="card-title"><h2>Core system</h2><span>Live configuration</span></div><div class="toggle-row"><div><b>Enable Sadeeq AI</b><p>Controls whether the central AI behavior is active for future AI operations.</p></div><label class="switch"><input id="enabled" type="checkbox"><span></span></label></div><label>System name<input id="systemName" maxlength="80" required></label></article>
-        <article class="card panel"><div class="card-title"><h2>Behavior</h2><span>Global</span></div><label>Behavior profile<textarea id="behavior" maxlength="2000" rows="5" required></textarea></label><p class="hint">This is the baseline behavior inherited by bots unless a later bot configuration overrides it.</p></article>
-        <article class="card panel wide"><div class="card-title"><h2>System instructions</h2><span>Highest-level guidance</span></div><label>Instructions<textarea id="instructions" maxlength="12000" rows="11" placeholder="Define the core rules, priorities, tone and boundaries for Sadeeq AI…"></textarea></label><div class="counter"><span>Keep instructions precise and reusable across the system.</span><span id="counter">0 / 12000</span></div></article>
-        <article class="card panel"><div class="card-title"><h2>Response preferences</h2><span>Defaults</span></div><label>Language<select id="language"><option value="auto">Auto-detect</option><option value="en">English</option><option value="ha">Hausa</option><option value="ar">Arabic</option></select></label><label>Response style<select id="style"><option value="balanced">Balanced</option><option value="concise">Concise</option><option value="detailed">Detailed</option><option value="professional">Professional</option></select></label></article>
-        <article class="card panel"><div class="card-title"><h2>Safety baseline</h2><span>Default</span></div><label>Safety mode<select id="safety"><option value="standard">Standard</option><option value="strict">Strict</option></select></label><p class="hint">Provider-specific safety controls will be configured where supported in later model/provider management.</p></article>
-        <div class="savebar"><div><b>System configuration</b><span id="updated">Not saved yet</span></div><button id="save" class="primary" type="submit">Save changes <span>→</span></button></div>
-      </form>
-    </section>
-  </main>
-
-  <div id="toastStack" class="toast-stack"></div>
-</div>
-
-<script src="./config.js?v=8"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-<script src="./sadeeq-ai.js?v=3"></script>
-</body>
-</html>
+<body><div class="app">
+<div id="loader" class="loader" aria-hidden="false"><div class="loader-box system-loader-box"><div class="system-loader-mark"><span></span><img src="./logo.svg?v=1" alt=""></div><strong>SADEEQ AI</strong><p>SECURING SYSTEM CONTROL</p></div></div>
+<div id="scrim" class="drawer-scrim"></div>
+<aside id="sidebar" class="sidebar"><div class="brand"><img src="./logo.svg?v=1" alt="Sadeeq AI logo"><div><strong>Sadeeq AI</strong><span>OWNER CONTROL CENTER</span></div></div><nav class="nav">
+<section class="nav-group"><div class="nav-label">OVERVIEW</div><a class="nav-item" href="./dashboard.html"><span class="nav-icon">⌂</span>Dashboard</a></section>
+<section class="nav-group"><div class="nav-label">AI MANAGEMENT</div><a class="nav-item active" href="./sadeeq-ai.html" aria-current="page"><span class="nav-icon">✦</span>Sadeeq AI</a><button class="nav-item" data-nav="Create Bot" type="button"><span class="nav-icon">＋</span>Create Bot</button><button class="nav-item" data-nav="All Bots" type="button"><span class="nav-icon">◫</span>All Bots</button><a class="nav-item" data-nav="AI Models" href="./ai-models.html"><span class="nav-icon">◇</span>AI Models</a><button class="nav-item" data-nav="Knowledge Base" type="button"><span class="nav-icon">▤</span>Knowledge Base</button></section>
+<section class="nav-group"><div class="nav-label">INTEGRATIONS</div><button class="nav-item" data-nav="Webs Joined" type="button"><span class="nav-icon">◎</span>Webs Joined</button><button class="nav-item" data-nav="API Keys" type="button"><span class="nav-icon">⌘</span>API Keys</button><button class="nav-item" data-nav="Web/API Tools" type="button"><span class="nav-icon">↗</span>Web/API Tools</button></section>
+<section class="nav-group"><div class="nav-label">MONITORING</div><button class="nav-item" data-nav="Usage & Analytics" type="button"><span class="nav-icon">▥</span>Usage &amp; Analytics</button><button class="nav-item" data-nav="Audit Logs" type="button"><span class="nav-icon">≡</span>Audit Logs</button><button class="nav-item" data-nav="System Health" type="button"><span class="nav-icon">♥</span>System Health</button><button class="nav-item" data-nav="Alerts & Incidents" type="button"><span class="nav-icon">!</span>Alerts &amp; Incidents</button></section>
+<section class="nav-group"><div class="nav-label">CONFIGURATION</div><button class="nav-item" data-nav="Instructions" type="button"><span class="nav-icon">≣</span>Instructions</button><button class="nav-item" data-nav="Automation" type="button"><span class="nav-icon">◌</span>Automation</button><button class="nav-item" data-nav="Security" type="button"><span class="nav-icon">◇</span>Security</button><button class="nav-item" data-nav="Account & Settings" type="button"><span class="nav-icon">⚙</span>Account &amp; Settings</button></section></nav><div class="sidebar-foot"><div class="security-pill"><span class="dot"></span><span id="sessionState">Checking secure session</span></div></div></aside>
+<main class="main"><header class="topbar"><button id="menu" class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="crumb"><small>AI MANAGEMENT</small><strong>Sadeeq AI</strong></div><div class="top-actions"><div class="status-chip"><span class="dot"></span>System control</div></div></header>
+<section class="content ai-content"><div class="welcome"><div><p class="kicker">SADEEQ AI / SYSTEM CONTROL</p><h1>Control the intelligence layer.</h1><p>Define how Sadeeq AI behaves across the platform. Model routing and provider credentials remain separated for the AI Models level.</p></div><div id="stateChip" class="status-chip"><span class="dot"></span>Loading configuration</div></div><div id="status" class="ai-status" role="status" aria-live="polite"></div>
+<form id="configForm" class="ai-grid" novalidate><article class="card hero-card"><div class="card-title"><h2>Core system</h2><span>Live configuration</span></div><div class="toggle-row"><div><b>Enable Sadeeq AI</b><p>Controls whether the central AI behavior is active for future AI operations.</p></div><label class="switch"><input id="enabled" type="checkbox"><span></span></label></div><label>System name<input id="systemName" maxlength="80" required></label></article>
+<article class="card panel"><div class="card-title"><h2>Behavior</h2><span>Global</span></div><label>Behavior profile<textarea id="behavior" maxlength="2000" rows="5" required></textarea></label><p class="hint">This is the baseline behavior inherited by bots unless a later bot configuration overrides it.</p></article>
+<article class="card panel wide"><div class="card-title"><h2>System instructions</h2><span>Highest-level guidance</span></div><label>Instructions<textarea id="instructions" maxlength="12000" rows="11" placeholder="Define the core rules, priorities, tone and boundaries for Sadeeq AI…"></textarea></label><div class="counter"><span>Keep instructions precise and reusable across the system.</span><span id="counter">0 / 12000</span></div></article>
+<article class="card panel"><div class="card-title"><h2>Response preferences</h2><span>Defaults</span></div><label>Language<select id="language"><option value="auto">Auto-detect</option><option value="en">English</option><option value="ha">Hausa</option><option value="ar">Arabic</option></select></label><label>Response style<select id="style"><option value="balanced">Balanced</option><option value="concise">Concise</option><option value="detailed">Detailed</option><option value="professional">Professional</option></select></label></article>
+<article class="card panel"><div class="card-title"><h2>Safety baseline</h2><span>Default</span></div><label>Safety mode<select id="safety"><option value="standard">Standard</option><option value="strict">Strict</option></select></label><p class="hint">Provider-specific safety controls will be configured where supported in later model/provider management.</p></article>
+<div class="savebar"><div><b>System configuration</b><span id="updated">Not saved yet</span></div><button id="save" class="primary" type="submit">Save changes <span>→</span></button></div></form></section></main><div id="toastStack" class="toast-stack"></div></div>
+<script src="./config.js?v=8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script><script src="./sadeeq-ai.js?v=3"></script></body></html>
