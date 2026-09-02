@@ -18,19 +18,8 @@
   async function verifyOwnerSession(){ if(!client)throw Error('Authentication service is unavailable.'); const {data:{session},error:sessionError}=await client.auth.getSession(); if(sessionError)throw sessionError; if(!session){await forceLogin();return false;} const {data:isOwner,error:ownerError}=await client.rpc('sadeeq_is_owner'); if(ownerError)throw ownerError; if(isOwner!==true){await forceLogin();return false;} verified=true; const email=session.user?.email||'Owner'; $('ownerEmail').textContent=email; $('avatar').textContent=email.charAt(0).toUpperCase()||'O'; $('sessionState').textContent='Secure session'; setLoader(true); return true; }
   function openDrawer(){ $('sidebar').classList.add('open'); $('drawerScrim').classList.add('open'); $('menuButton').setAttribute('aria-expanded','true'); }
   function closeDrawer(){ $('sidebar').classList.remove('open'); $('drawerScrim').classList.remove('open'); $('menuButton').setAttribute('aria-expanded','false'); }
-  function enterSadeeqAI(item,event){
-    if(event) event.preventDefault();
-    if(navigating)return;
-    navigating=true;
-    closeDrawer();
-    item.classList.add('active');
-    document.body.classList.add('transitioning');
-    transition.classList.add('active');
-    transition.setAttribute('aria-hidden','false');
-    const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    window.setTimeout(()=>{ window.location.href=item.href; }, reduced ? 60 : 620);
-  }
-  function handleNav(item,event){ const label=item.dataset.nav; if(label==='Dashboard')return; if(label==='Sadeeq AI'){enterSadeeqAI(item,event);return;} closeDrawer(); showToast('Module coming soon',`${label} is reserved for its dedicated Sadeeq AI level.`); }
+  function enterModule(item,event){ if(event) event.preventDefault(); if(navigating)return; navigating=true; closeDrawer(); item.classList.add('active'); document.body.classList.add('transitioning'); transition.classList.add('active'); transition.setAttribute('aria-hidden','false'); const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches; window.setTimeout(()=>{ window.location.href=item.href; }, reduced ? 60 : 620); }
+  function handleNav(item,event){ const label=item.dataset.nav; if(label==='Dashboard')return; if(label==='Sadeeq AI'||label==='AI Models'){enterModule(item,event);return;} closeDrawer(); showToast('Module coming soon',`${label} is reserved for its dedicated Sadeeq AI level.`); }
   $('menuButton').addEventListener('click',()=>{$('sidebar').classList.contains('open')?closeDrawer():openDrawer()});
   $('drawerScrim').addEventListener('click',closeDrawer);
   $('closeNotifications').addEventListener('click',()=>showToast('Notifications','The notification center foundation is ready for system events.'));
