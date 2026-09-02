@@ -1,0 +1,16 @@
+const SUPABASE_URL='https://jntdjewdgiotphkajjnc.supabase.co';
+const SUPABASE_KEY=window.SADEEQ_SUPABASE_KEY||'';
+const $=id=>document.getElementById(id);
+const statusEl=$('status');
+function showStatus(message,type='error'){statusEl.textContent=message;statusEl.className=`status show ${type}`}
+function clearStatus(){statusEl.textContent='';statusEl.className='status'}
+function switchMode(mode){clearStatus();$('loginForm').classList.toggle('hidden',mode!=='login');$('signupForm').classList.toggle('hidden',mode!=='signup');$('resetForm').classList.toggle('hidden',mode!=='reset');$('loginTab').classList.toggle('active',mode==='login');$('signupTab').classList.toggle('active',mode==='signup');$('loginTab').setAttribute('aria-selected',mode==='login');$('signupTab').setAttribute('aria-selected',mode==='signup')}
+$('loginTab').addEventListener('click',()=>switchMode('login'));
+$('signupTab').addEventListener('click',()=>switchMode('signup'));
+$('forgotBtn').addEventListener('click',()=>switchMode('reset'));
+$('resetBack').addEventListener('click',()=>switchMode('login'));
+function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)}
+async function getClient(){if(!SUPABASE_KEY)throw new Error('Supabase publishable key is not configured.');if(!window.supabase)throw new Error('Authentication service is unavailable.');return window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();clearStatus();const email=$('loginEmail').value.trim().toLowerCase(),password=$('loginPassword').value;if(!validEmail(email)||!password)return showStatus('Enter a valid email and password.');try{const sb=await getClient();const{error}=await sb.auth.signInWithPassword({email,password});if(error)throw error;showStatus('Login successful. Redirecting…','success');setTimeout(()=>location.href='./dashboard.html',450)}catch(err){showStatus(err.message||'Login failed. Please try again.')}});
+$('signupForm').addEventListener('submit',async e=>{e.preventDefault();clearStatus();const email=$('signupEmail').value.trim().toLowerCase(),password=$('signupPassword').value,confirm=$('signupConfirm').value;if(!validEmail(email))return showStatus('Enter a valid email.');if(password.length<8)return showStatus('Password must be at least 8 characters.');if(password!==confirm)return showStatus('Passwords do not match.');try{const sb=await getClient();const{data:users,error:checkError}=await sb.rpc('sadeeq_signup_available');if(checkError)throw checkError;if(!data)return showStatus('Sign Up is closed because the first owner account already exists.');const{data:userData,error}=await sb.auth.signUp({email,password});if(error)throw error;if(userData.session){showStatus('Owner account created. Redirecting…','success');setTimeout(()=>location.href='./dashboard.html',450)}else showStatus('Account created. Check your email to confirm the account.','success')}catch(err){showStatus(err.message||'Account creation failed.')}});
+$('resetForm').addEventListener('submit',async e=>{e.preventDefault();clearStatus();const email=$('resetEmail').value.trim().toLowerCase();if(!validEmail(email))return showStatus('Enter a valid owner email.');showStatus('Password recovery is being prepared securely.','success')});
