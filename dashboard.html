@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#05070d">
 <meta name="description" content="Sadeeq AI owner console">
 <title>Sadeeq AI — Owner</title>
-<link rel="stylesheet" href="./auth.css?v=3">
+<link rel="stylesheet" href="./auth.css?v=4">
 </head>
 <body>
 <main class="auth-shell">
@@ -24,7 +24,7 @@
     <footer>SADEEQ AI • Owner access</footer>
   </section>
 </main>
-<script src="./config.js?v=3"></script>
+<script src="./config.js?v=4"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 <script>
 (() => {
@@ -33,30 +33,33 @@
   const supabaseKey = window.SADEEQ_SUPABASE_KEY || '';
   const statusEl = document.getElementById('status');
   const logoutButton = document.getElementById('logout');
-  const indexUrl = new URL('./index.html', window.location.href).href;
+  const indexUrl = new URL('./index.html?signed_out=1', window.location.href).href;
 
   function setStatus(message, type = 'success') {
     statusEl.textContent = message;
     statusEl.className = `status show ${type}`;
   }
 
+  function createClient() {
+    if (!supabaseUrl || !supabaseKey) throw new Error('Supabase public configuration is missing.');
+    if (!window.supabase) throw new Error('Authentication service is unavailable.');
+    return window.supabase.createClient(supabaseUrl, supabaseKey, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    });
+  }
+
   async function boot() {
     try {
-      if (!supabaseUrl || !supabaseKey || !window.supabase) {
-        throw new Error('Authentication service is not configured.');
-      }
-      const client = window.supabase.createClient(supabaseUrl, supabaseKey, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-      });
+      const client = createClient();
       const { data: { session } } = await client.auth.getSession();
       if (!session) {
-        window.location.replace(indexUrl);
+        window.location.replace(new URL('./index.html', window.location.href).href);
         return;
       }
       const { data: isOwner, error } = await client.rpc('sadeeq_is_owner');
       if (error || isOwner !== true) {
         await client.auth.signOut({ scope: 'local' });
-        window.location.replace(indexUrl);
+        window.location.replace(new URL('./index.html', window.location.href).href);
         return;
       }
       setStatus('Secure owner session verified.');
@@ -69,14 +72,16 @@
     logoutButton.disabled = true;
     logoutButton.textContent = 'Signing out…';
     try {
-      if (supabaseUrl && supabaseKey && window.supabase) {
-        const client = window.supabase.createClient(supabaseUrl, supabaseKey, {
-          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-        });
-        await client.auth.signOut({ scope: 'local' });
-      }
-    } finally {
-      window.location.replace(`${indexUrl}?signed_out=1`);
+      const client = createClient();
+      const { error } = await client.auth.signOut({ scope: 'local' });
+      if (error) throw error;
+      const { data: { session } } = await client.auth.getSession();
+      if (session) throw new Error('The local session could not be cleared.');
+      window.location.replace(indexUrl);
+    } catch (error) {
+      logoutButton.disabled = false;
+      logoutButton.innerHTML = 'Sign out <span>↗</span>';
+      setStatus(error?.message || 'Sign out failed. Please try again.', 'error');
     }
   });
 
