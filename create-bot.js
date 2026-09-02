@@ -162,6 +162,7 @@
     event.preventDefault();
     const label = item.dataset.nav;
     if (label === 'AI Models') location.href = './ai-models.html';
+    else if (label === 'All Bots') location.href = './all-bots.html';
     else status(`${label} is reserved for its dedicated Sadeeq AI level.`, 'success');
   }));
 
