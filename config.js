@@ -1,4 +1,3 @@
 // Sadeeq AI public client configuration.
-// Set this to the Supabase publishable key for project jntdjewdgiotphkajjnc.
-// Never put a service-role or secret key in this file.
-window.SADEEQ_SUPABASE_KEY='';
+// This is a publishable client key; never put a service-role or secret key here.
+window.SADEEQ_SUPABASE_KEY='sb_publishable_dRruhAKfcjqO8ob4bYvw1Q_rRHqS21_';
