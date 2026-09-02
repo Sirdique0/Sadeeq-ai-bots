@@ -1,33 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#05070d">
-<title>Sadeeq AI — Owner</title>
-<link rel="stylesheet" href="./auth.css?v=2">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#05070d"><title>Sadeeq AI — Owner</title><link rel="stylesheet" href="./auth.css?v=2">
 </head>
 <body>
-<main class="auth-shell">
-<div class="aurora aurora-one"></div><div class="aurora aurora-two"></div><div class="stars" aria-hidden="true"></div>
-<section class="auth-card" aria-labelledby="owner-title">
-<div class="brand-mark" aria-hidden="true">S</div>
-<p class="eyebrow">OWNER CONSOLE</p>
-<h1 id="owner-title">Sadeeq AI</h1>
-<p class="subtitle">Your secure owner session is active.</p>
-<div id="status" class="status show success">Verifying secure session…</div>
-<div class="notice">Level 1 authentication is active. The full owner dashboard and management modules will be connected in the next build level.</div>
-<button id="logout" class="primary-btn" type="button">Sign out <span>↗</span></button>
-<footer>SADEEQ AI • Owner access</footer>
-</section>
-</main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+<main class="auth-shell"><div class="aurora aurora-one"></div><div class="aurora aurora-two"></div><div class="stars" aria-hidden="true"></div><section class="auth-card" aria-labelledby="owner-title"><div class="brand-mark" aria-hidden="true">S</div><p class="eyebrow">OWNER CONSOLE</p><h1 id="owner-title">Sadeeq AI</h1><p class="subtitle">Your secure owner session is active.</p><div id="status" class="status show success">Verifying secure session…</div><div class="notice">Level 1 authentication is active. The full owner dashboard and management modules will be connected in the next build level.</div><button id="logout" class="primary-btn" type="button">Sign out <span>↗</span></button><footer>SADEEQ AI • Owner access</footer></section></main>
+<script src="./config.js?v=1"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 <script>
-const URL='https://jntdjewdgiotphkajjnc.supabase.co';
-const KEY=window.SADEEQ_SUPABASE_KEY||'';
-const status=document.getElementById('status');
+const URL='https://jntdjewdgiotphkajjnc.supabase.co';const KEY=window.SADEEQ_SUPABASE_KEY||'';const status=document.getElementById('status');
 (async()=>{try{if(!KEY||!window.supabase)throw Error('Authentication service is not configured.');const sb=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const{data:{session}}=await sb.auth.getSession();if(!session){location.replace('./index.html');return}const{data:isOwner,error}=await sb.rpc('sadeeq_is_owner');if(error||!isOwner){await sb.auth.signOut();location.replace('./index.html');return}status.textContent='Secure owner session verified.'}catch(e){status.className='status show error';status.textContent=e.message||'Session verification failed.'}})();
 document.getElementById('logout').onclick=async()=>{try{if(window.supabase&&KEY){const sb=window.supabase.createClient(URL,KEY);await sb.auth.signOut()}}finally{location.replace('./index.html')}};
-</script>
-</body>
-</html>
+</script></body></html>
