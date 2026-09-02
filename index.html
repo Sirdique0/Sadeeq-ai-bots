@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#05070d">
   <meta name="description" content="Sadeeq AI — secure AI control platform">
   <title>Sadeeq AI</title>
-  <link rel="stylesheet" href="./auth.css?v=1">
+  <link rel="stylesheet" href="./auth.css?v=2">
 </head>
 <body>
   <main class="auth-shell">
@@ -49,15 +49,26 @@
       <form id="resetForm" class="auth-form hidden" novalidate>
         <button class="back-btn" id="resetBack" type="button">← Back</button>
         <h2>Recover account</h2>
-        <p class="form-copy">Enter the owner email to request a secure recovery code.</p>
+        <p class="form-copy">Enter your owner email and we will send a secure password-reset link.</p>
         <label for="resetEmail">Owner email</label>
         <input id="resetEmail" type="email" autocomplete="email" required placeholder="you@example.com">
-        <button class="primary-btn" type="submit">Send recovery code <span>→</span></button>
+        <button class="primary-btn" type="submit">Send reset link <span>→</span></button>
+      </form>
+
+      <form id="updatePasswordForm" class="auth-form hidden" novalidate>
+        <h2>Set new password</h2>
+        <p class="form-copy">Choose a new password for your Sadeeq AI owner account.</p>
+        <label for="newPassword">New password</label>
+        <input id="newPassword" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters">
+        <label for="newPasswordConfirm">Confirm new password</label>
+        <input id="newPasswordConfirm" type="password" autocomplete="new-password" minlength="8" required placeholder="Repeat password">
+        <button class="primary-btn" type="submit">Update password <span>→</span></button>
       </form>
 
       <footer>SADEEQ AI • Secure owner access</footer>
     </section>
   </main>
-  <script src="./auth.js?v=1" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js" defer></script>
+  <script src="./auth.js?v=2" defer></script>
 </body>
 </html>
