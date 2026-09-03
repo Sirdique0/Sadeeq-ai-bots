@@ -5,7 +5,6 @@
   const $ = id => document.getElementById(id);
   const loader = $('appLoader');
   const toastStack = $('toastStack');
-  const navItems = [...document.querySelectorAll('[data-nav]')];
   const client = window.supabase?.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
   let verified = false;
   let closing = false;
@@ -18,24 +17,14 @@
   async function verifyOwnerSession(){ if(!client)throw Error('Authentication service is unavailable.'); const {data:{session},error:sessionError}=await client.auth.getSession(); if(sessionError)throw sessionError; if(!session){await forceLogin();return false;} const {data:isOwner,error:ownerError}=await client.rpc('sadeeq_is_owner'); if(ownerError)throw ownerError; if(isOwner!==true){await forceLogin();return false;} verified=true; const email=session.user?.email||'Owner'; $('ownerEmail').textContent=email; $('avatar').textContent=email.charAt(0).toUpperCase()||'O'; $('sessionState').textContent='Secure session'; setLoader(true); loadBotCount(); return true; }
   function openDrawer(){ $('sidebar').classList.add('open'); $('drawerScrim').classList.add('open'); $('menuButton').setAttribute('aria-expanded','true'); }
   function closeDrawer(){ $('sidebar').classList.remove('open'); $('drawerScrim').classList.remove('open'); $('menuButton').setAttribute('aria-expanded','false'); }
-  function handleNav(item){
-    const href=item.getAttribute('href');
-    if(href){
-      // Let the browser perform the normal navigation. Intercepting the anchor click
-      // with preventDefault/window.location was unreliable on some mobile browsers.
-      closeDrawer();
-      return;
-    }
-    const label=item.dataset.nav;
-    closeDrawer();
-    showToast('Module coming soon',`${label} is reserved for its dedicated Sadeeq AI level.`);
-  }
   $('menuButton').addEventListener('click',()=>{$('sidebar').classList.contains('open')?closeDrawer():openDrawer()});
   $('drawerScrim').addEventListener('click',closeDrawer);
   $('closeNotifications').addEventListener('click',()=>showToast('Notifications','The notification center foundation is ready for system events.'));
   $('profileButton').addEventListener('click',()=>showToast('Owner account',$('ownerEmail').textContent||'Owner'));
   $('logoutButton').addEventListener('click',async()=>{if(closing)return;closing=true;$('logoutButton').disabled=true;$('logoutButton').innerHTML='<span>Signing out…</span>';try{const {error}=await client.auth.signOut({scope:'global'});if(error)throw error;const {data:{session}}=await client.auth.getSession();if(session)throw Error('The session could not be cleared.');window.location.replace(loginUrl());}catch(error){closing=false;$('logoutButton').disabled=false;$('logoutButton').innerHTML='<span>Sign out</span><b>↗</b>';showToast('Sign out failed',error?.message||'Please try again.','error');}});
-  navItems.forEach(item=>item.addEventListener('click',()=>handleNav(item)));
+  // Only non-link sidebar buttons need JavaScript. Real links are deliberately untouched so
+  // mobile browsers perform normal document navigation with no preventDefault interception.
+  document.querySelectorAll('button[data-nav]').forEach(button=>button.addEventListener('click',()=>{closeDrawer();showToast('Module coming soon',`${button.dataset.nav} is reserved for its dedicated Sadeeq AI level.`);}));
   client?.auth.onAuthStateChange((event,session)=>{if(!verified||closing)return;if(event==='SIGNED_OUT'||!session)forceLogin();});
   window.addEventListener('pageshow',()=>{if(!closing)verifyOwnerSession().catch(error=>{setLoader(true);showToast('Session verification failed',error?.message||'Please log in again.','error');window.setTimeout(forceLogin,900);});});
   window.addEventListener('keydown',event=>{if(event.key==='Escape')closeDrawer();});
