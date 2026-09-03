@@ -22,8 +22,22 @@
   $('closeNotifications').addEventListener('click',()=>showToast('Notifications','The notification center foundation is ready for system events.'));
   $('profileButton').addEventListener('click',()=>showToast('Owner account',$('ownerEmail').textContent||'Owner'));
   $('logoutButton').addEventListener('click',async()=>{if(closing)return;closing=true;$('logoutButton').disabled=true;$('logoutButton').innerHTML='<span>Signing out…</span>';try{const {error}=await client.auth.signOut({scope:'global'});if(error)throw error;const {data:{session}}=await client.auth.getSession();if(session)throw Error('The session could not be cleared.');window.location.replace(loginUrl());}catch(error){closing=false;$('logoutButton').disabled=false;$('logoutButton').innerHTML='<span>Sign out</span><b>↗</b>';showToast('Sign out failed',error?.message||'Please try again.','error');}});
-  // Only non-link sidebar buttons need JavaScript. Real links are deliberately untouched so
-  // mobile browsers perform normal document navigation with no preventDefault interception.
+
+  // Sidebar navigation: API Keys is deliberately handled in capture phase as a hard
+  // navigation fallback. This avoids mobile touch/click handlers, drawer scrims, or
+  // stale cached scripts swallowing the tap. No preventDefault is used elsewhere.
+  const apiKeysNav = $('apiKeysNav');
+  function openApiKeys(){
+    if(!apiKeysNav || closing) return;
+    closeDrawer();
+    window.location.assign(new URL('./api-keys.html?nav=' + Date.now(), window.location.href).href);
+  }
+  if(apiKeysNav){
+    apiKeysNav.addEventListener('click', event => { event.preventDefault(); event.stopImmediatePropagation(); openApiKeys(); }, true);
+    apiKeysNav.addEventListener('pointerup', event => { if(event.pointerType === 'touch'){ event.preventDefault(); event.stopImmediatePropagation(); openApiKeys(); } }, true);
+    apiKeysNav.addEventListener('touchend', event => { event.preventDefault(); event.stopImmediatePropagation(); openApiKeys(); }, {capture:true, passive:false});
+  }
+
   document.querySelectorAll('button[data-nav]').forEach(button=>button.addEventListener('click',()=>{closeDrawer();showToast('Module coming soon',`${button.dataset.nav} is reserved for its dedicated Sadeeq AI level.`);}));
   client?.auth.onAuthStateChange((event,session)=>{if(!verified||closing)return;if(event==='SIGNED_OUT'||!session)forceLogin();});
   window.addEventListener('pageshow',()=>{if(!closing)verifyOwnerSession().catch(error=>{setLoader(true);showToast('Session verification failed',error?.message||'Please log in again.','error');window.setTimeout(forceLogin,900);});});
