@@ -23,19 +23,18 @@
   $('profileButton').addEventListener('click',()=>showToast('Owner account',$('ownerEmail').textContent||'Owner'));
   $('logoutButton').addEventListener('click',async()=>{if(closing)return;closing=true;$('logoutButton').disabled=true;$('logoutButton').innerHTML='<span>Signing out…</span>';try{const {error}=await client.auth.signOut({scope:'global'});if(error)throw error;const {data:{session}}=await client.auth.getSession();if(session)throw Error('The session could not be cleared.');window.location.replace(loginUrl());}catch(error){closing=false;$('logoutButton').disabled=false;$('logoutButton').innerHTML='<span>Sign out</span><b>↗</b>';showToast('Sign out failed',error?.message||'Please try again.','error');}});
 
-  // Sidebar navigation: API Keys is deliberately handled in capture phase as a hard
-  // navigation fallback. This avoids mobile touch/click handlers, drawer scrims, or
-  // stale cached scripts swallowing the tap. No preventDefault is used elsewhere.
+  // FINAL API KEYS ROUTE: handle every click/touch/pointer activation at capture level.
+  // This intentionally bypasses normal navigation handlers and closes the drawer first.
   const apiKeysNav = $('apiKeysNav');
-  function openApiKeys(){
+  const goApiKeys = () => {
     if(!apiKeysNav || closing) return;
     closeDrawer();
-    window.location.assign(new URL('./api-keys.html?nav=' + Date.now(), window.location.href).href);
-  }
+    const target = new URL('./api-keys.html', window.location.href);
+    target.searchParams.set('nav', String(Date.now()));
+    window.location.href = target.href;
+  };
   if(apiKeysNav){
-    apiKeysNav.addEventListener('click', event => { event.preventDefault(); event.stopImmediatePropagation(); openApiKeys(); }, true);
-    apiKeysNav.addEventListener('pointerup', event => { if(event.pointerType === 'touch'){ event.preventDefault(); event.stopImmediatePropagation(); openApiKeys(); } }, true);
-    apiKeysNav.addEventListener('touchend', event => { event.preventDefault(); event.stopImmediatePropagation(); openApiKeys(); }, {capture:true, passive:false});
+    ['click','pointerup','touchend'].forEach(type=>apiKeysNav.addEventListener(type,event=>{event.preventDefault();event.stopImmediatePropagation();goApiKeys();},{capture:true,passive:false}));
   }
 
   document.querySelectorAll('button[data-nav]').forEach(button=>button.addEventListener('click',()=>{closeDrawer();showToast('Module coming soon',`${button.dataset.nav} is reserved for its dedicated Sadeeq AI level.`);}));
