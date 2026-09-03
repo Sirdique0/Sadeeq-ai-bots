@@ -23,10 +23,10 @@
   $('profileButton').addEventListener('click',()=>showToast('Owner account',$('ownerEmail').textContent||'Owner'));
   $('logoutButton').addEventListener('click',async()=>{if(closing)return;closing=true;$('logoutButton').disabled=true;$('logoutButton').innerHTML='<span>Signing out…</span>';try{const {error}=await client.auth.signOut({scope:'global'});if(error)throw error;const {data:{session}}=await client.auth.getSession();if(session)throw Error('The session could not be cleared.');window.location.replace(loginUrl());}catch(error){closing=false;$('logoutButton').disabled=false;$('logoutButton').innerHTML='<span>Sign out</span><b>↗</b>';showToast('Sign out failed',error?.message||'Please try again.','error');}});
 
-  // Navigation is intentionally native for every real <a> link.
-  // No preventDefault, capture handlers, touch handlers, or manual redirects are used here.
-  // This avoids mobile browsers treating the API Keys sidebar link as a non-navigating control.
+  // Real <a> elements use the browser's native navigation. There is deliberately
+  // no preventDefault, pointer/touch interception, or manual API Keys redirect.
   document.querySelectorAll('button[data-nav]').forEach(button=>button.addEventListener('click',()=>{closeDrawer();showToast('Module coming soon',`${button.dataset.nav} is reserved for its dedicated Sadeeq AI level.`);}));
+  document.querySelectorAll('.sidebar a').forEach(link=>link.addEventListener('click',()=>closeDrawer()));
   client?.auth.onAuthStateChange((event,session)=>{if(!verified||closing)return;if(event==='SIGNED_OUT'||!session)forceLogin();});
   window.addEventListener('pageshow',()=>{if(!closing)verifyOwnerSession().catch(error=>{setLoader(true);showToast('Session verification failed',error?.message||'Please log in again.','error');window.setTimeout(forceLogin,900);});});
   window.addEventListener('keydown',event=>{if(event.key==='Escape')closeDrawer();});
